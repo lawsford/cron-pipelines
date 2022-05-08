@@ -1,0 +1,29 @@
+---
+apiVersion: tekton.dev/v1beta1
+kind: PipelineRun
+metadata:
+  name: build-hello-world
+  labels:
+    app.kubernetes.io/description: A pipeline to build and push an image
+spec:
+  pipelineRef:
+    name: buildpacks
+  params:
+    - name: BUILDER_IMAGE
+      value: gcr.io/buildpacks/builder:v1
+    - name: TRUST_BUILDER
+      value: "true"
+    - name: APP_IMAGE
+      value: lawsford/tekton-registry:0.1
+    - name: SOURCE_URL
+      value: https://github.com/lawsford/cron-pipelines
+    - name: SOURCE_SUBPATH
+      value: images/example
+  workspaces:
+    - name: source-ws
+      subPath: source
+      persistentVolumeClaim:
+        claimName: cache-image-ws-pvc
+    # NOTE: Pipeline hangs if optional cache workspace is missing so we provide an empty directory
+    - name: cache-ws
+      emptyDir: {}
