@@ -1,3 +1,4 @@
 .gitsecret/keys/random_seed
 !*.secret
-meta/secrets/dockerhub.yamlmeta/secrets/github.yaml
+meta/secrets/dockerhub.yaml
+meta/secrets/github.yaml
