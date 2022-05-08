@@ -3,8 +3,7 @@ apiVersion: tekton.dev/v1beta1
 kind: PipelineRun
 metadata:
   name: build-hello-world
-  labels:
-    app.kubernetes.io/description: A pipeline to build and push an image
+  namespace: freighter
 spec:
   pipelineRef:
     name: buildpacks
