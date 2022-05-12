@@ -1,0 +1,54 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: buildah-pipeline
+spec:
+  description: >-
+    Pipeline to fetch Docker resources and build them.
+  params:
+    - name: image-name
+      description: The fully qualified image name 
+      default: 'lawsford/tekton-registry:0.1'
+    - name: github-repo-url
+      description: The GitHub Repo of the Java Application
+      default: https://github.com/lawsford/cron-pipelines
+    - name: github-repo-revision
+      description: The GitHub revision to use
+      default: master
+    - name: dockerfile-path
+      description: The path to the Dockerfile
+      default: images/example/Dockerfile
+    - name: docker-context
+      description: The Docker context to use
+      default: images/example
+  workspaces:
+    - name: source
+  tasks:
+    - name: git-clone
+      taskRef:
+        name: git-clone
+      params:
+        - name: url
+          value: $(params.github-repo-url)
+        - name: revision
+          value: $(params.github-repo-revision)
+        - name: deleteExisting
+          value: 'true'
+      workspaces:
+        - name: output
+          workspace: source
+    - name: buildah-image
+      taskRef:
+        name: buildah
+      runAfter:
+        - git-clone
+      params:
+        - name: IMAGE
+          value: '$(params.image-name)'
+        - name: TLSVERIFY
+          value: 'false'
+        - name: DOCKERFILE
+          value: $(params.dockerfile-path)
+      workspaces:
+        - name: source
+          workspace: source

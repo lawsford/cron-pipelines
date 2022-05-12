@@ -2,27 +2,23 @@
 apiVersion: tekton.dev/v1beta1
 kind: PipelineRun
 metadata:
-  name: build-hello-world
+  generateName: build-hello-world-
   namespace: freighter
 spec:
   pipelineRef:
-    name: buildpacks
+    name: buildah-pipeline
+  serviceAccountName: build-bot
   params:
-    - name: BUILDER_IMAGE
-      value: gcr.io/buildpacks/builder:v1
-    - name: TRUST_BUILDER
-      value: "true"
-    - name: APP_IMAGE
+    - name: image-name
       value: lawsford/tekton-registry:0.1
-    - name: SOURCE_URL
+    - name: github-repo-url
       value: https://github.com/lawsford/cron-pipelines
-    - name: SOURCE_SUBPATH
+    - name: github-repo-revision
+      value: master
+    - name: docker-context
       value: images/example
   workspaces:
     - name: source-ws
       subPath: source
       persistentVolumeClaim:
         claimName: cache-image-ws-pvc
-    # NOTE: Pipeline hangs if optional cache workspace is missing so we provide an empty directory
-    - name: cache-ws
-      emptyDir: {}
