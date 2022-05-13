@@ -49,6 +49,8 @@ spec:
           value: 'false'
         - name: DOCKERFILE
           value: $(params.dockerfile-path)
+        - name: CONTEXT
+          value: $(params.docker-context)
       workspaces:
         - name: source
           workspace: source

@@ -15,10 +15,12 @@ spec:
       value: https://github.com/lawsford/cron-pipelines
     - name: github-repo-revision
       value: master
+    - name: dockerfile-path
+      value: images/example/Dockerfile
     - name: docker-context
       value: images/example
   workspaces:
-    - name: source-ws
+    - name: source
       subPath: source
       persistentVolumeClaim:
         claimName: cache-image-ws-pvc
